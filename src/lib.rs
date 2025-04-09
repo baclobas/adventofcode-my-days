@@ -1,7 +1,7 @@
 use std::fs::File;
-use std::io::{self, BufRead};
+use std::io::BufRead;
 
-fn read_and_split(path: &str, left_list: &mut Vec<i32>, right_list: &mut Vec<i32>) {
+fn populate_lists(path: &str, left_list: &mut Vec<i32>, right_list: &mut Vec<i32>) {
     let file = File::open(path).unwrap();
     let reader = std::io::BufReader::new(file);
     for line in reader.lines() {
@@ -20,7 +20,7 @@ mod tests {
     fn day_1_solution() {
         let mut left_vec = Vec::<i32>::new();
         let mut right_vec = Vec::<i32>::new();
-        read_and_split("./input.txt", &mut left_vec, &mut right_vec);
+        populate_lists("./input.txt", &mut left_vec, &mut right_vec);
         left_vec.sort();
         right_vec.sort();
         let mut pairs = Vec::new();

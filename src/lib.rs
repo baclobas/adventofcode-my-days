@@ -12,6 +12,46 @@ fn populate_lists(path: &str, left_list: &mut Vec<i32>, right_list: &mut Vec<i32
     }
 }
 
+fn check_reports(path: &str) -> i32 {
+    let mut safe_reports = 0;
+    let file = File::open(path).unwrap();
+    let reader = std::io::BufReader::new(file);
+    for line in reader.lines() {
+        let line = line.unwrap();
+        let levels: Vec<i32> = line
+            .split_ascii_whitespace()
+            .collect::<Vec<&str>>()
+            .into_iter()
+            .map(|i| i.parse::<i32>().unwrap())
+            .collect();
+        println!("{:?}", levels);
+        if is_safe_report(levels) {
+            safe_reports += 1;
+        }
+    }
+    safe_reports
+}
+
+fn is_safe_report(report: Vec<i32>) -> bool {
+    if report[0] < report[1] {
+        for i in 0..report.len() - 1 {
+            if report[i] >= report[i + 1] || report[i + 1] - report[i] > 3 {
+                return false;
+            }
+        }
+        true
+    } else if report[0] > report[1] {
+        for i in 0..report.len() - 1 {
+            if report[i + 1] >= report[i] || report[i] - report[i + 1] > 3 {
+                return false;
+            }
+        }
+        true
+    } else {
+        false
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -56,5 +96,11 @@ mod tests {
             sum_of_scores += *k * *v;
         }
         assert_eq!(22539317, sum_of_scores);
+    }
+
+    #[test]
+    fn day2_part1_is_reports_safe() {
+        let safe_reports = check_reports("./reports.txt");
+        assert_eq!(287, safe_reports);
     }
 }
